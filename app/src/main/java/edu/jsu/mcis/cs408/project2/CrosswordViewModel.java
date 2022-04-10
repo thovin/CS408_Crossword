@@ -31,6 +31,7 @@ public class CrosswordViewModel extends ViewModel {
 
     private final MutableLiveData<String> cluesAcross = new MutableLiveData<>();
     private final MutableLiveData<String> cluesDown = new MutableLiveData<>();
+    //TODO add bool for win condition
 
     // Initialize Shared Model
 
@@ -38,14 +39,13 @@ public class CrosswordViewModel extends ViewModel {
 
         if (words.getValue() == null) {
             loadWords(context);
-            addAllWordsToGrid(); // TODO: for testing only; remove later!
         }
 
     }
 
     // Add Word to Grid
 
-    private void addWordToGrid(String key) {
+    public void addWordToGrid(String key) {
 
         // Get word from collection (look up using the given key)
 
@@ -82,9 +82,7 @@ public class CrosswordViewModel extends ViewModel {
 
     }
 
-    //TODO
     // Add all words to grid (for testing purposes only!)
-
     private void addAllWordsToGrid() {
         for (Map.Entry<String, Word> e : Objects.requireNonNull(words.getValue()).entrySet()) {
             addWordToGrid( e.getKey() );
@@ -237,6 +235,10 @@ public class CrosswordViewModel extends ViewModel {
 
     public int getBoxNumber(int row, int column) {
         return Objects.requireNonNull(numbers.getValue())[row][column];
+    }
+
+    public Word getWord(String key) {
+        return words.getValue().get(key);
     }
 
 }

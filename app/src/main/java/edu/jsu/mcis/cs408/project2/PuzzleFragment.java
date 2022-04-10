@@ -1,12 +1,16 @@
 package edu.jsu.mcis.cs408.project2;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -105,6 +109,7 @@ public class PuzzleFragment extends Fragment implements TabFragment {
 
     public void onClick(View v) {
 
+
         // Get Row/Column of Tapped Square
 
         String[] fields = v.getTag().toString().trim().split(",");
@@ -113,13 +118,50 @@ public class PuzzleFragment extends Fragment implements TabFragment {
 
         int box = model.getBoxNumber(row, column);
 
-        // If this square has a box number, show coordinates in a Toast
+        if (!(box == 0)) {
 
-        if (box != 0) {
-            String message = "R" + row + "C" + column + ": #" + box;
-            Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+            AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+            builder.setTitle("Test Title");
+            builder.setMessage("Test Message");
+            final EditText input = new EditText(v.getContext());
+            input.setInputType(InputType.TYPE_CLASS_TEXT);
+            builder.setView(input);
+
+            final String[] guessedWord = new String[1];
+
+            builder.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+//                    guessedWord[0] = input.getText().toString();
+                    processGuess(input.getText().toString().toUpperCase(), String.valueOf(box));
+                }
+            });
+
+            AlertDialog dialog = builder.create();
+            dialog.show();
+
+        }
+    }
+
+    private void processGuess(String guess, String box) {
+        String keyAcross = String.valueOf(box) + WordDirection.ACROSS;
+        String keyDown = String.valueOf(box) + WordDirection.DOWN;
+        Word wordAcross = model.getWord(keyAcross);
+        Word wordDown = model.getWord(keyDown);
+
+        if (wordAcross != null) {
+            if (guess.equals(wordAcross.getWord())) {
+                model.addWordToGrid(keyAcross);
+            }
         }
 
+        if (wordDown != null) {
+            if (guess.equals(wordDown.getWord())) {
+                model.addWordToGrid(keyDown);
+            }
+        }
+
+        updateGrid();
     }
 
     /* Methods for Creating Grid */
