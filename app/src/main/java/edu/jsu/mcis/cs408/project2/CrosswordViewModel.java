@@ -38,7 +38,7 @@ public class CrosswordViewModel extends ViewModel {
 
         if (words.getValue() == null) {
             loadWords(context);
-            addAllWordsToGrid(); // for testing only; remove later!
+            addAllWordsToGrid(); // TODO: for testing only; remove later!
         }
 
     }
@@ -59,20 +59,30 @@ public class CrosswordViewModel extends ViewModel {
 
             int row = word.getRow();
             int column = word.getColumn();
-            String w = word.getWord();
+//            String w = word.getWord();
 
             // Add word to Letters array, one character at a time
 
             /*
-
-                INSERT YOUR CODE HERE
-
+                INSERT YOUR CODE HERE  DONE DONE DONE
             */
+
+            String stringWord = word.getWord();
+            for (int i = 0; i < stringWord.length(); i++) {
+                if (word.getDirection() == WordDirection.ACROSS) {
+                    letters.getValue()[row][column + i] = stringWord.charAt(i);
+                } else if (word.getDirection() == WordDirection.DOWN) {
+                    letters.getValue()[row + i][column] = stringWord.charAt(i);
+                }
+            }
+
+
 
         }
 
     }
 
+    //TODO
     // Add all words to grid (for testing purposes only!)
 
     private void addAllWordsToGrid() {
@@ -149,17 +159,36 @@ public class CrosswordViewModel extends ViewModel {
 
                         /*
 
-                            INSERT YOUR CODE HERE
+                            INSERT YOUR CODE HERE  DONE DONE DONE
 
                         */
+
+                        int spaces = word.getWord().length();
+                        for (int i = 0; i < spaces; i++) {
+                            if (word.getDirection() == WordDirection.ACROSS) {
+//                                letters.getValue()[row][i] = BLANK_CHAR;
+                                lArray[row][column + i] = BLANK_CHAR;
+                            } else if (word.getDirection() == WordDirection.DOWN) {
+//                                letters.getValue()[i][column] = BLANK_CHAR;
+                                lArray[row + i][column] = BLANK_CHAR;
+                            }
+                        }
+
+
 
                         // Append Clue to StringBuilder (either clueAcrossBuffer or clueDownBuffer)
 
                         /*
 
-                            INSERT YOUR CODE HERE
+                            INSERT YOUR CODE HERE  DONE DONE DONE
 
                         */
+
+                        if (word.getDirection() == WordDirection.ACROSS) {
+                            clueAcrossBuffer.append(String.valueOf(word.getBox())).append(": ").append(word.getClue()).append("\n");
+                        } else if (word.getDirection() == WordDirection.DOWN) {
+                            clueDownBuffer.append(String.valueOf(word.getBox())).append(": ").append(word.getClue()).append("\n");
+                        }
 
                         // Create unique key; add word to collection
 
