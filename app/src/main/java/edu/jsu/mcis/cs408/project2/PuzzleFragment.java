@@ -134,6 +134,10 @@ public class PuzzleFragment extends Fragment implements TabFragment {
                 public void onClick(DialogInterface dialogInterface, int i) {
 //                    guessedWord[0] = input.getText().toString();
                     processGuess(input.getText().toString().toUpperCase(), String.valueOf(box));
+
+                    if (model.gameOver()) {
+                        Toast.makeText(v.getContext(), "Game complete!", Toast.LENGTH_SHORT).show();
+                    }
                 }
             });
 
@@ -162,6 +166,7 @@ public class PuzzleFragment extends Fragment implements TabFragment {
         }
 
         updateGrid();
+
     }
 
     /* Methods for Creating Grid */

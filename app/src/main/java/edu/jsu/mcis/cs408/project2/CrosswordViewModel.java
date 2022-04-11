@@ -1,13 +1,16 @@
 package edu.jsu.mcis.cs408.project2;
 
 import android.content.Context;
+import android.provider.ContactsContract;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -31,14 +34,20 @@ public class CrosswordViewModel extends ViewModel {
 
     private final MutableLiveData<String> cluesAcross = new MutableLiveData<>();
     private final MutableLiveData<String> cluesDown = new MutableLiveData<>();
-    //TODO add bool for win condition
+    private DatabaseHandler db;
 
     // Initialize Shared Model
 
     public void init(Context context) {
 
         if (words.getValue() == null) {
+            db = new DatabaseHandler(context, null, null, 1);
+
             loadWords(context);
+            ArrayList<String> keys = db.getKeys();
+            for (String key : keys) {
+                addWordToGrid(key);
+            }
         }
 
     }
@@ -75,6 +84,8 @@ public class CrosswordViewModel extends ViewModel {
                     letters.getValue()[row + i][column] = stringWord.charAt(i);
                 }
             }
+
+            db.addKey(key);
 
 
 
@@ -164,10 +175,8 @@ public class CrosswordViewModel extends ViewModel {
                         int spaces = word.getWord().length();
                         for (int i = 0; i < spaces; i++) {
                             if (word.getDirection() == WordDirection.ACROSS) {
-//                                letters.getValue()[row][i] = BLANK_CHAR;
                                 lArray[row][column + i] = BLANK_CHAR;
                             } else if (word.getDirection() == WordDirection.DOWN) {
-//                                letters.getValue()[i][column] = BLANK_CHAR;
                                 lArray[row + i][column] = BLANK_CHAR;
                             }
                         }
@@ -239,6 +248,18 @@ public class CrosswordViewModel extends ViewModel {
 
     public Word getWord(String key) {
         return words.getValue().get(key);
+    }
+
+    public boolean gameOver() {
+        boolean gameOver = true;
+        char[][] letters = this.letters.getValue();
+        for (int i = 0; i < letters.length; i++) {
+            for (int j = 0; j < letters[i].length; j++) {
+                if (letters[i][j] == BLANK_CHAR) { gameOver = false; }
+            }
+        }
+
+        return gameOver;
     }
 
 }
